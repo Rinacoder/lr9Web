@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}News{% endblock %}
+
+{% block body %}
+
+    <div class="bg-secondary bg-opacity-10 pb-5">
+        <div class="card mb-3 text-white  bg-dark bg-gradient rounded-0 border-dark" style="width: content-box">
+            <div class="container">
+                <div class="card-body">
+                    <div class="row g-0">
+                        <div class="col-md-5" style="margin: 0 auto; padding: 0; ">
+                            <div class="card-body">
+                                <h1 class="card-title ">{{ news.title }}</h1>
+                                <p class="card-text lh-lg">{{ news.annotation }}</p>
+                                <div>
+                                    <p class="card-text lh-lg" style="color: #AAAAAA">Количество просмотров: {{ news.numberOfViews }} <br>
+                                        Дата добавления: {{ news.dateAdded ? news.dateAdded|date('Y-m-d ') : '' }}</p>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6" style="margin: 0 auto; padding: 0; ">
+                            <img src="{{ news.photo }}"  alt="..." style="width: 100%;">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <p class="lead my-3">{{ news.newsText|nl2br }}</p>
+
+
+            <a href="{{ path('app_news_index') }}"><button type="button" class="btn btn-dark mb-3">На главную</button></a>
+
+
+            <div class=" row g-2 mb-3">
+                <div class="col-10">
+                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="2"></textarea>
+                </div>
+                <div class="col-2">
+                    <div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <p>К сожалению отправка сообщения временно недоступна. Приносим извинения за доставленные неудобства.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a class="btn btn-primary " data-bs-toggle="modal" href="#exampleModalToggle" role="button">Отправить</a>
+
+                </div>
+            </div>
+
+            {% for comment in comments %}
+                {% if comment.news == news %}
+                    {% for user in users %}
+                        {% if comment.user == user and comment.moderationstatus =='одобрено' %}
+                            <div class="d-flex bg-light pt-3 shadow p-3">
+                                <img src="{{ user.avatar }}" class="card-img col-2 m-1" alt="..."  style="object-fit: cover; object-position: center;height: 45px;width: 45px;">
+                                <div class="col-10 mb-0 small lh-sm border-bottom" style="margin-left: 10px">
+                                    <a href="{{ path('app_user_show', {'id': user.id}) }}" class="text-decoration-none text-dark fs-6"><strong class="d-block text-gray-dark">@{{ user.name }} </strong></a>
+                                    <p class="mb-0"><small class="text-muted"> {{ comment.dateAdded ? news.dateAdded|date('Y-m-d H:m') : '' }}</small></p>
+                                    <p class="fs-6">
+                                        {{ comment.commenttext}}
+                                    </p>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+
+
+
+        </div>
+    </div>
+
+{% endblock %}
